@@ -45,6 +45,10 @@ public class BossSpawnerItem extends Item {
         return cache;
     }
 
+    private static String niceName(EntityType<?> t) {
+        return t.getRegistryName().getPath().replace('_', ' ');
+    }
+
     @Override
     public ActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stack = player.getItemInHand(hand);
@@ -56,13 +60,18 @@ public class BossSpawnerItem extends Item {
             return ActionResult.fail(stack);
         }
 
-        int idx = stack.getOrCreateTag().getInt("idx") % types.size();
+        int size = types.size();
+        int idx = stack.getOrCreateTag().getInt("idx") % size;
 
         if (player.isShiftKeyDown()) {
-            idx = (idx + 1) % types.size();
+            if (hand == Hand.OFF_HAND) {
+                idx = (idx - 1 + size) % size;
+            } else {
+                idx = (idx + 1) % size;
+            }
             stack.getOrCreateTag().putInt("idx", idx);
             player.displayClientMessage(new StringTextComponent("Selected: "
-                    + types.get(idx).getRegistryName() + " (" + (idx + 1) + "/" + types.size() + ")"), true);
+                    + niceName(types.get(idx)) + " (" + (idx + 1) + "/" + size + ")"), true);
             return ActionResult.success(stack);
         }
 
@@ -74,7 +83,7 @@ public class BossSpawnerItem extends Item {
 
         type.spawn((ServerWorld) world, null, player, pos, SpawnReason.SPAWN_EGG, true, false);
         player.getCooldowns().addCooldown(this, 60);
-        player.displayClientMessage(new StringTextComponent("Spawned " + type.getRegistryName()), true);
+        player.displayClientMessage(new StringTextComponent("Spawned " + niceName(type)), true);
         return ActionResult.success(stack);
     }
 }
