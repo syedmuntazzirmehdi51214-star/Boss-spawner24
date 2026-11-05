@@ -4,7 +4,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafml.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
